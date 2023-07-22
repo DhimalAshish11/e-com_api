@@ -10,6 +10,11 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
+//api
+
+import adminRouter from "./src/router/AdminRouter.js";
+app.use("/api/v1/admin", adminRouter);
+
 import morgan from "morgan";
 import cors from "cors";
 import { mongoConnect } from "./src/config/mongoConfig.js";
@@ -19,6 +24,13 @@ app.get("/", (req, res) => {
   res.json({
     status: "success",
     message: "server is live",
+  });
+});
+
+app.use((error, req, res, next) => {
+  res.json({
+    status: "error",
+    message: error.message,
   });
 });
 
