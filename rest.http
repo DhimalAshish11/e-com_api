@@ -1,5 +1,7 @@
 ### rootapi
 @rootAPI= http://localhost:8000/api/v1
+@categoryAPI= http://localhost:8000/api/v1/category
+
 
 ### create new admin
     POST {{rootAPI}}/admin
@@ -13,3 +15,23 @@
     "email": "a@gmail.com",
     "address": ""
     }
+
+
+
+### POST CATEGORY
+POST {{rootAPI}}/category
+Content-Type: application/json
+
+{
+    "title": "Table"
+}
+
+###GET CATEGORY
+
+GET  {{rootAPI}}/category
+
+Content-Type: application/json
+
+{
+    "title": "Home Application"
+}

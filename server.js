@@ -13,7 +13,10 @@ app.use(express.json());
 //api
 
 import adminRouter from "./src/router/AdminRouter.js";
+import categoryRouter from "./src/router/CategoryRouter.js";
+
 app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/category", categoryRouter);
 
 import morgan from "morgan";
 import cors from "cors";
