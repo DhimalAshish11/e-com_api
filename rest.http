@@ -23,7 +23,7 @@ POST {{rootAPI}}/category
 Content-Type: application/json
 
 {
-    "title": "Table"
+    "title": "home"
 }
 
 ###GET CATEGORY
@@ -34,4 +34,15 @@ Content-Type: application/json
 
 {
     "title": "Home Application"
+}
+
+###update category
+
+PUT {{rootAPI}}/category
+Content-Type: application/json
+
+{
+   "_id":"64c3d8f37410c3ffc78031aa",
+   "title":"dfgsdfddddddds" ,
+   "status":"active"
 }
