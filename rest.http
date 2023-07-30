@@ -46,3 +46,13 @@ Content-Type: application/json
    "title":"dfgsdfddddddds" ,
    "status":"active"
 }
+
+###
+ POST {{rootAPI}}/admin/sign-in
+    Content-Type: application/json
+
+    {
+    
+    "password": "asshhk",
+    "email": "a@gmail.com",
+    }

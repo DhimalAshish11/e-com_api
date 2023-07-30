@@ -16,11 +16,12 @@ import adminRouter from "./src/router/AdminRouter.js";
 import categoryRouter from "./src/router/CategoryRouter.js";
 
 app.use("/api/v1/admin", adminRouter);
-app.use("/api/v1/category", categoryRouter);
+app.use("/api/v1/category", auth, categoryRouter);
 
 import morgan from "morgan";
 import cors from "cors";
 import { mongoConnect } from "./src/config/mongoConfig.js";
+import { auth } from "./src/middleware/authMiddleware.js";
 mongoConnect();
 
 app.get("/", (req, res) => {

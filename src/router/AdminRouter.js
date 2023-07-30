@@ -12,12 +12,27 @@ import {
   accountVerifiedNotification,
 } from "../helper/nodemailer.js";
 import { createAccessJWT, createRefreshJWT } from "../helper/jwt.js";
+import { auth, refreshAuth } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
+///get admin details
+
+router.get("/", auth, (req, res, next) => {
+  try {
+    res.json({
+      status: "success",
+      message: "Here is the user Info",
+      user: req.userInfo,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 //create new admin
 
-router.post("/", newAdminValidation, async (req, res, next) => {
+router.post("/", auth, newAdminValidation, async (req, res, next) => {
   try {
     //encrypt password
 
@@ -132,6 +147,20 @@ router.post("/sign-in", loginValidation, async (req, res, next) => {
     res.json({
       status: "error",
       message: "Invalid log in",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+///return the refreshJWT
+
+router.get("/", refreshAuth, (req, res, next) => {
+  try {
+    res.json({
+      status: "success",
+      message: "Here is the user Info",
+      user: req.userInfo,
     });
   } catch (error) {
     next(error);
