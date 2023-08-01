@@ -167,4 +167,14 @@ router.get("/", refreshAuth, (req, res, next) => {
   }
 });
 
+router.post("/logout", (req, res, next) => {
+  try {
+    const { accessJWT, refreshJWT } = req.body;
+
+    accessJWT && updateAdmin({});
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
