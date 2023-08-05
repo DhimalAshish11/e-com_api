@@ -62,7 +62,7 @@ export const refreshAuth = async (req, res, next) => {
 
       if (user?._id && user?.status === "active") {
         // create new accessJWT
-        const accessJWT = await createAcessJWT(decoded.email);
+        const accessJWT = await createAccessJWT(decoded.email);
 
         return res.json({
           status: "success",

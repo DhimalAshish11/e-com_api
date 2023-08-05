@@ -4,6 +4,6 @@ export const insertNewSession = (obj) => {
   return SessionSchema(obj).save();
 };
 
-export const DeleteSession = async (token) => {
+export const deleteSession = async (token) => {
   const data = await SessionSchema.findOneAndDelete({ token });
 };

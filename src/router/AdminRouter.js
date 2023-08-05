@@ -1,6 +1,10 @@
 import express from "express";
 import { comparePassword, hassPassword } from "../helper/bcrypt.js";
-import { getAdminByEmail, insertAdmin } from "../model/admin/AdminModel.js";
+import {
+  getAdminByEmail,
+  insertAdmin,
+  updateAdminById,
+} from "../model/admin/AdminModel.js";
 import {
   loginValidation,
   newAdminValidation,
@@ -13,6 +17,7 @@ import {
 } from "../helper/nodemailer.js";
 import { createAccessJWT, createRefreshJWT } from "../helper/jwt.js";
 import { auth, refreshAuth } from "../middleware/authMiddleware.js";
+import { deleteSession } from "../model/session/SessionModel.js";
 
 const router = express.Router();
 
@@ -155,23 +160,21 @@ router.post("/sign-in", loginValidation, async (req, res, next) => {
 
 ///return the refreshJWT
 
-router.get("/", refreshAuth, (req, res, next) => {
+router.get("/get-accessjwt", refreshAuth);
+
+router.post("/logout", async (req, res, next) => {
   try {
+    const { accessJWT, refreshJWT, _id } = req.body;
+
+    accessJWT && deleteSession(accessJWT);
+
+    if (refreshJWT && _id) {
+      const dt = await updateAdminById({ _id, refreshJWT: "" });
+    }
+
     res.json({
       status: "success",
-      message: "Here is the user Info",
-      user: req.userInfo,
     });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/logout", (req, res, next) => {
-  try {
-    const { accessJWT, refreshJWT } = req.body;
-
-    accessJWT && updateAdmin({});
   } catch (error) {
     next(error);
   }
