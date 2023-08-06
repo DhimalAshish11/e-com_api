@@ -7,6 +7,7 @@ import {
 } from "../model/category/categoryModel.js";
 import slugify from "slugify";
 import { updateCatValidation } from "../middleware/joiValidation.js";
+import { auth } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
@@ -26,7 +27,7 @@ router.get("/", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const { title } = req.body;
-    console.log(title);
+
     !title &&
       res.json({
         status: "error",
@@ -54,7 +55,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.put("/", async (req, res, next) => {
+router.put("/", updateCatValidation, async (req, res, next) => {
   try {
     const { _id, ...rest } = req.body;
     const result = await updateCategoryById(_id, rest);
@@ -91,7 +92,6 @@ router.delete("/:_id", async (req, res, next) => {
       message: "Error, Unable to process your request.",
     });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 });

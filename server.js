@@ -14,9 +14,11 @@ app.use(express.json());
 
 import adminRouter from "./src/router/AdminRouter.js";
 import categoryRouter from "./src/router/CategoryRouter.js";
+import paymentRouter from "./src/router/PaymentRouter.js";
 
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/category", auth, categoryRouter);
+app.use("/api/v1/payment", auth, paymentRouter);
 
 import morgan from "morgan";
 import cors from "cors";

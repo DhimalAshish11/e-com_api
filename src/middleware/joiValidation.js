@@ -15,8 +15,6 @@ export const newAdminValidation = (req, res, next) => {
 
     const { values, error } = schema.validate(req.body);
 
-    console.log(values, error);
-
     //check data against the rule
 
     error

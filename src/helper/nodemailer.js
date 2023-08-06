@@ -40,8 +40,6 @@ export const accountVerificationEmail = async (obj) => {
         
         `, // html body
   });
-
-  console.log("Message sent: %s", info.messageId);
 };
 
 export const accountVerifiedNotification = async (obj) => {

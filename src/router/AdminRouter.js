@@ -129,14 +129,12 @@ router.post("/sign-in", loginValidation, async (req, res, next) => {
     if (user?._id) {
       ///check the password
       const isMatched = comparePassword(password, user.password);
-      console.log(email, password, isMatched);
 
       if (isMatched) {
         ///create 2 jwts
 
         const accessJWT = await createAccessJWT(email);
         const refreshJWT = await createRefreshJWT(email);
-        console.log(accessJWT);
 
         ///create accessJWT and store in session table: short live 15 min
         ///create refeshJWT and store with the user data in user data in user table:long live
