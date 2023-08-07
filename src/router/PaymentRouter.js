@@ -4,6 +4,7 @@ import {
   updatePaymentById,
 } from "../model/payment/PaymentModel.js";
 import { insertPayment } from "../model/payment/PaymentModel.js";
+import { NewPaymentValidation } from "../middleware/joiValidation.js";
 
 const router = express.Router();
 
@@ -21,22 +22,9 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", NewPaymentValidation, async (req, res, next) => {
   try {
-    const { title } = req.body;
-
-    !title &&
-      res.json({
-        status: "error",
-        message: "title is required",
-      });
-
-    const obj = {
-      title,
-      slug: slugify(title, { trim: true, lower: true }),
-    };
-
-    const result = await insertPayment(obj);
+    const result = await insertPayment(req.body);
 
     result?._id
       ? res.json({
@@ -45,7 +33,7 @@ router.post("/", async (req, res, next) => {
         })
       : res.json({
           status: "error",
-          message: "Error, payment cannot be added",
+          message: "Error, payment cannot be added.",
         });
   } catch (error) {
     next(error);

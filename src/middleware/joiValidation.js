@@ -96,3 +96,27 @@ export const loginValidation = (req, res, next) => {
     next(error);
   }
 };
+
+////payment option vbalidation///
+
+export const NewPaymentValidation = (req, res, next) => {
+  try {
+    //define the schema
+    const schema = Joi.object({
+      title: Joi.string().min(3).max(100).required(),
+      status: Joi.string().min(3).max(100).required(),
+      description: Joi.string().min(3).max(100).required(),
+    });
+
+    const { error } = schema.validate(req.body);
+
+    error
+      ? res.json({
+          status: "error",
+          message: error.message,
+        })
+      : next();
+  } catch (error) {
+    next(error);
+  }
+};

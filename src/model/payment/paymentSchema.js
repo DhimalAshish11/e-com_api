@@ -12,20 +12,8 @@ const PaymentSchema = new mongoose.Schema(
       required: true,
     },
 
-    paymentMethod: {
+    description: {
       type: String,
-      required: true,
-    },
-
-    amount: {
-      type: String,
-      required: true,
-    },
-
-    slug: {
-      type: String,
-      unique: true,
-      index: 1,
       required: true,
     },
   },
