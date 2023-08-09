@@ -120,3 +120,26 @@ export const NewPaymentValidation = (req, res, next) => {
     next(error);
   }
 };
+
+export const updatePaymentValidation = (req, res, next) => {
+  try {
+    //define the schema
+    const schema = Joi.object({
+      _id: Joi.string().min(3).max(100).required(),
+      title: Joi.string().min(3).max(100).required(),
+      status: Joi.string().min(3).max(100).required(),
+      description: Joi.string().min(3).max(100).required(),
+    });
+
+    const { error } = schema.validate(req.body);
+
+    error
+      ? res.json({
+          status: "error",
+          message: error.message,
+        })
+      : next();
+  } catch (error) {
+    next(error);
+  }
+};

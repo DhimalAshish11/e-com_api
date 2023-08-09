@@ -4,7 +4,7 @@ export const insertPayment = (obj) => {
   return PaymentSchema(obj).save();
 };
 
-export const getPayment = () => {
+export const getNewPayment = () => {
   return PaymentSchema.find();
 };
 
