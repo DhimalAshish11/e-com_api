@@ -8,13 +8,10 @@ export const getNewPayment = (obj) => {
   return PaymentSchema.find();
 };
 
-export const updatePaymentById = (_id, obj) => {
-  return PaymentSchema.findByIdAndUpdate(_id, obj, { new: true });
+export const updatePaymentById = (_id, ...rest) => {
+  return PaymentSchema.findByIdAndUpdate(_id, rest);
 };
 
-export const updatePayment = (filter, updateObj) => {
-  return PaymentSchema.findOneAndUpdate(filter, updateObj, { new: true });
-};
 export const deletePaymentById = (_id) => {
   return PaymentSchema.findByIdAndDelete(_id);
 };
