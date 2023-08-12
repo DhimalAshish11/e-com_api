@@ -27,6 +27,10 @@ const productSchema = new mongoose.Schema(
 
     price: {
       type: Number,
+      required: true,
+    },
+    salesPrice: {
+      type: Number,
     },
 
     qty: {
@@ -42,15 +46,19 @@ const productSchema = new mongoose.Schema(
 
     salesStartDate: {
       type: Date,
-      Default: null,
+      default: null,
     },
 
     salesEndDate: {
       type: Date,
-      Default: null,
+      default: null,
     },
 
     description: {
+      type: String,
+      required: true,
+    },
+    thumbnail: {
       type: String,
       required: true,
     },

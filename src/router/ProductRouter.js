@@ -5,8 +5,10 @@ import multer from "multer";
 import {
   deleteProductById,
   getProduct,
+  getProductById,
   insertProduct,
 } from "../model/product/ProductModel.js";
+import { NewProductValidation } from "../middleware/joiValidation.js";
 const router = express.Router();
 const imgFolderPath = "public/imgs/product";
 //setup multer middleware
@@ -31,54 +33,63 @@ const upload = multer({ storage });
 
 //////where do you want to store your file
 
-//what name you want to give it
+//what name you want to give itjoi
 
-router.get("/", async (req, res, next) => {
+router.get("/:_id?", async (req, res, next) => {
   try {
-    const result = await getProduct();
+    const { _id } = req.params;
+
+    const products = _id ? await getProductById(_id) : await getProduct();
 
     res.json({
       status: "success",
       message: "Here are the product",
-      result,
+      products,
     });
   } catch (error) {
     next(error);
   }
 });
 
-router.post("/", upload.array("images", 5), async (req, res, next) => {
-  try {
-    console.log(req.files);
+router.post(
+  "/",
+  upload.array("images", 5),
+  NewProductValidation,
+  async (req, res, next) => {
+    try {
+      console.log(req.files);
 
-    if (req.files.length) {
-      req.body.images = req.files.map((item) => ImageBitmap.path);
+      if (req.files.length) {
+        req.body.images = req.files.map((item) => item.path);
+        req.body.thumbnail = req.body.images[0];
+      }
+
+      req.body.slug = slugify(req.body.name, { trim: true, lower: true });
+
+      const result = await insertProduct(req.body);
+      result?._id
+        ? res.json({
+            status: "success",
+            message: "Herre are product",
+          })
+        : res.json({
+            status: "error",
+            message: "Error, order cannot be added.",
+          });
+    } catch (error) {
+      let msg = error.message;
+
+      if (msg.includes("E11000 duplicate key error")) {
+        error.statusCode = 400;
+
+        error.message =
+          "The product slug or sku alread related to another product, change name and sku and try agin later.";
+      }
+
+      next(error);
     }
-
-    req.body.slug = slugify(req.body.name, { trim: true, lower: true });
-
-    const result = await insertProduct(req.body);
-    result?._id
-      ? res.json({
-          status: "success",
-          message: "Herre are product",
-        })
-      : res.json({
-          status: "error",
-          message: "Error, order cannot be added.",
-        });
-  } catch (error) {
-    let msg = error.message;
-
-    if (msg.includes("E11000 duplicate key error")) {
-      error.statusCode = 400;
-
-      error.message = "This product is already realted to other products";
-    }
-
-    next(error);
   }
-});
+);
 
 router.delete("/:_id", async (req, res, next) => {
   try {

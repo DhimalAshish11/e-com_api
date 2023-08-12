@@ -150,7 +150,7 @@ export const NewProductValidation = (req, res, next) => {
 
     //define the schema
     const schema = Joi.object({
-      status: Joi.string().min(3).max(100).required(),
+      status: Joi.string().required(),
       name: Joi.string().min(3).max(100).required(),
       parentCat: Joi.string().min(3).max(100).required(),
       sku: Joi.string().min(3).max(100).required(),
@@ -158,8 +158,8 @@ export const NewProductValidation = (req, res, next) => {
       qty: Joi.number().required(),
       salesPrice: Joi.number(),
       description: Joi.string().min(3).max(10000).required(),
-      salesStartDate: Joi.number().allow("", null),
-      salesEndDate: Joi.number().allow("", null),
+      salesStartDate: Joi.string().allow("", null),
+      salesEndDate: Joi.string().allow("", null),
     });
 
     const { error } = schema.validate(req.body);

@@ -16,7 +16,7 @@ export const findOneProductByfilter = (filter) => {
   return ProductSchema.findOne(filter);
 };
 
-export const updateProductById = (_id, ...rest) => {
+export const updateProductById = ({ _id, ...rest }) => {
   return ProductSchema.findByIdAndUpdate(_id, ...rest);
 };
 
