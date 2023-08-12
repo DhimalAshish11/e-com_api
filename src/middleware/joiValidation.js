@@ -143,3 +143,34 @@ export const updatePaymentValidation = (req, res, next) => {
     next(error);
   }
 };
+
+export const NewProductValidation = (req, res, next) => {
+  try {
+    req.body.salesPrice = req.body.salesPrice || 0;
+
+    //define the schema
+    const schema = Joi.object({
+      status: Joi.string().min(3).max(100).required(),
+      name: Joi.string().min(3).max(100).required(),
+      parentCat: Joi.string().min(3).max(100).required(),
+      sku: Joi.string().min(3).max(100).required(),
+      price: Joi.number().required(),
+      qty: Joi.number().required(),
+      salesPrice: Joi.number(),
+      description: Joi.string().min(3).max(10000).required(),
+      salesStartDate: Joi.number().allow("", null),
+      salesEndDate: Joi.number().allow("", null),
+    });
+
+    const { error } = schema.validate(req.body);
+
+    error
+      ? res.json({
+          status: "error",
+          message: error.message,
+        })
+      : next();
+  } catch (error) {
+    next(error);
+  }
+};
