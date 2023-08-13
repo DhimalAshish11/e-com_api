@@ -46,12 +46,10 @@ const productSchema = new mongoose.Schema(
 
     salesStartDate: {
       type: Date,
-      default: null,
     },
 
     salesEndDate: {
       type: Date,
-      default: null,
     },
 
     description: {

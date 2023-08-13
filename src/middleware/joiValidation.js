@@ -174,3 +174,48 @@ export const NewProductValidation = (req, res, next) => {
     next(error);
   }
 };
+
+export const UpdateProductValidation = (req, res, next) => {
+  try {
+    req.body.salesPrice = req.body.salesPrice || 0;
+    req.body.salesStartDate =
+      req.body.salesStartDate === "null" || !req.body.salesStartDate
+        ? null
+        : req.body.salesStartDate;
+
+    req.body.salesEndDate =
+      req.body.salesEndDate === "null" || !req.body.salesEndDate
+        ? null
+        : req.body.salesEndDate;
+
+    //define the schema
+    const schema = Joi.object({
+      _id: Joi.string().required(),
+      status: Joi.string().required(),
+      name: Joi.string().min(3).max(100).required(),
+      parentCat: Joi.string().min(3).max(100).required(),
+
+      price: Joi.number().required(),
+      qty: Joi.number().required(),
+      salesPrice: Joi.number(),
+      description: Joi.string().min(3).max(10000).required(),
+      salesStartDate: Joi.string().allow("", null),
+      salesEndDate: Joi.string().allow("", null),
+      images: Joi.string().min(3).max(10000).allow(""),
+      thumbnail: Joi.string().min(3).max(10000).allow(""),
+    });
+
+    const { error } = schema.validate(req.body);
+
+    req.body.images = req.body.images.split(",");
+
+    error
+      ? res.json({
+          status: "error",
+          message: error.message,
+        })
+      : next();
+  } catch (error) {
+    next(error);
+  }
+};

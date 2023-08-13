@@ -7,8 +7,12 @@ import {
   getProduct,
   getProductById,
   insertProduct,
+  updateProductById,
 } from "../model/product/ProductModel.js";
-import { NewProductValidation } from "../middleware/joiValidation.js";
+import {
+  NewProductValidation,
+  UpdateProductValidation,
+} from "../middleware/joiValidation.js";
 const router = express.Router();
 const imgFolderPath = "public/imgs/product";
 //setup multer middleware
@@ -86,6 +90,39 @@ router.post(
           "The product slug or sku alread related to another product, change name and sku and try agin later.";
       }
 
+      next(error);
+    }
+  }
+);
+
+router.put(
+  "/",
+  upload.array("images", 5),
+  UpdateProductValidation,
+  async (req, res, next) => {
+    try {
+      console.log(req.files);
+
+      if (req.files.length) {
+        const newImgs = req.files.map((item) => item.path);
+        req.body.images = [...req.body.images, ...newImgs];
+
+        /*   req.body.thumbnail = req.body.images[0]; */
+      }
+
+      req.body.slug = slugify(req.body.name, { trim: true, lower: true });
+
+      const result = await updateProductById(req.body);
+      result?._id
+        ? res.json({
+            status: "success",
+            message: "Product has been updated sucessfully",
+          })
+        : res.json({
+            status: "error",
+            message: "Error, unable to update.",
+          });
+    } catch (error) {
       next(error);
     }
   }
