@@ -3,6 +3,7 @@ import { comparePassword, hassPassword } from "../helper/bcrypt.js";
 import {
   getAdminByEmail,
   insertAdmin,
+  updateAdmin,
   updateAdminById,
 } from "../model/admin/AdminModel.js";
 import {
@@ -14,12 +15,14 @@ import { v4 as uuidv4 } from "uuid";
 import {
   accountVerificationEmail,
   accountVerifiedNotification,
+  passwordChangedNotification,
   sendOTPNotification,
 } from "../helper/nodemailer.js";
 import { createAccessJWT, createRefreshJWT } from "../helper/jwt.js";
 import { auth, refreshAuth } from "../middleware/authMiddleware.js";
 import {
   deleteSession,
+  deleteSessionByFilter,
   insertNewSession,
 } from "../model/session/SessionModel.js";
 import { otpGenerator } from "../helper/RequestOPT.js";
@@ -215,4 +218,55 @@ router.post("/request-otp", async (req, res, next) => {
     next(error);
   }
 });
+
+router.post("/reset-password", async (req, res, next) => {
+  try {
+    const { email, password, otp } = req.body;
+
+    if (email && password) {
+      // check if the token is valid
+
+      const result = await deleteSessionByFilter({
+        token: otp,
+        associate: email,
+      });
+
+      if (result?._id) {
+        //check user exist
+
+        const user = await getAdminByEmail(email);
+        if (user?._id) {
+          // encrypt the password
+
+          const hashPass = hassPassword(password);
+
+          const updatedUser = await updateAdmin(
+            { email },
+            { password: hashPass }
+          );
+          if (updatedUser?._id) {
+            // send email notification
+
+            await passwordChangedNotification({
+              email,
+              fName: updatedUser.fName,
+            });
+
+            return res.json({
+              status: "success",
+              message: "Your password has been updated, you may login now.",
+            });
+          }
+        }
+      }
+    }
+    res.json({
+      status: "error",
+      message: "Invalid request or token",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
