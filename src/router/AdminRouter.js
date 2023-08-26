@@ -2,6 +2,7 @@ import express from "express";
 import { comparePassword, hassPassword } from "../helper/bcrypt.js";
 import {
   getAdminByEmail,
+  getAdminDisplay,
   insertAdmin,
   updateAdmin,
   updateAdminById,
@@ -270,3 +271,18 @@ router.post("/reset-password", async (req, res, next) => {
 });
 
 export default router;
+
+/////get admin table
+
+router.get("/display", auth, async (req, res, next) => {
+  try {
+    const user = await getAdminDisplay();
+    res.json({
+      status: "success",
+      message: "Here is the admin Info",
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
