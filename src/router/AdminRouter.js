@@ -2,6 +2,7 @@ import express from "express";
 import { comparePassword, hassPassword } from "../helper/bcrypt.js";
 import {
   getAdminByEmail,
+  getAdminById,
   getAdminDisplay,
   insertAdmin,
   updateAdmin,
@@ -11,6 +12,7 @@ import {
   loginValidation,
   newAdminValidation,
   newAdminVerificationValidation,
+  updateAdminValidation,
 } from "../middleware/joiValidation.js";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -282,6 +284,81 @@ router.get("/display", auth, async (req, res, next) => {
       message: "Here is the admin Info",
       user,
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+///uodate admin
+
+router.put("/", async (req, res, next) => {
+  try {
+    const { _id, password, ...rest } = req.body;
+
+    ///find user by email
+
+    const user = await getAdminById(_id);
+    console.log(user);
+
+    if (user?._id) {
+      ///check the password
+      const isMatched = comparePassword(password, user.password);
+
+      console.log(isMatched, password, user.password);
+      if (isMatched) {
+        console.log(rest);
+        const result = await updateAdminById(_id, rest);
+        ///create 2 jwts
+        ///create accessJWT and store in session table: short live 15 min
+        ///create refeshJWT and store with the user data in user data in user table:long live
+        result?._id
+          ? res.json({
+              status: "success",
+              message: "Updated Successfully",
+            })
+          : res.json({
+              status: "error",
+              message: "Unable to update",
+            });
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put("/change-password", auth, async (req, res, next) => {
+  try {
+    const { password, newPassword } = req.body;
+    console.log(req.body);
+
+    const { _id } = req.userInfo;
+
+    console.log(_id);
+    ///find user by email
+
+    const user = await getAdminById({ _id });
+    console.log(user);
+    if (user?._id) {
+      ///check the password
+      const isMatched = comparePassword(password, user.password);
+
+      console.log(isMatched);
+      if (isMatched) {
+        const pp = hassPassword(newPassword);
+        const result = await updateAdmin({ _id }, { password: pp });
+
+        result?._id
+          ? res.json({
+              status: "success",
+              message: "Password updated succesfully",
+            })
+          : res.json({
+              status: "error",
+              message: "Unable to update",
+            });
+      }
+    }
   } catch (error) {
     next(error);
   }
